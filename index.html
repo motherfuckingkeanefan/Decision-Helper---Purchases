@@ -1,28 +1,137 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Decision Helper - Purchases</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <title>Anti-GAS: Think Before You Buy</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f7f7f7;
+    }
+    .container {
+      max-width: 600px;
+      margin: 30px auto;
+      background: #fff;
+      padding: 20px 30px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+    label {
+      display: block;
+      margin: 15px 0 5px;
+      font-weight: bold;
+    }
+    input[type="text"],
+    input[type="number"],
+    select {
+      width: 100%;
+      padding: 8px;
+      box-sizing: border-box;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #007BFF;
+      border: none;
+      color: #fff;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    .result {
+      margin-top: 20px;
+      padding: 15px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      background-color: #e9ecef;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <div id="category-container">
-            <h1>Make a Smarter Purchase Decision</h1>
-            <button class="main-button" onclick="selectCategory(0)">Concert Tickets</button>
-            <button class="main-button" onclick="selectCategory(1)">Recording Gear</button>
-        </div>
+  <div class="container">
+    <h1>Anti-GAS: Think Before You Buy</h1>
+    <form id="antiGasForm">
+      <label for="equipment">Type of Equipment:</label>
+      <select id="equipment" name="equipment">
+        <option value="microphone">Microphone</option>
+        <option value="recorder">Recorder</option>
+        <option value="other">Other Audio Gear</option>
+      </select>
 
-        <div id="question-container"></div>
+      <label for="need">Do you really need this upgrade?</label>
+      <select id="need" name="need">
+        <option value="yes">Yes, I need it</option>
+        <option value="no">No, it's just for show</option>
+      </select>
 
-        <div id="navigation-buttons">
-            <button id="prev-button" onclick="goToPrevious()">Back</button>
-            <button id="next-button" onclick="nextQuestion()">Next</button>
-            <button id="return-button" onclick="returnToStart()">Start Over</button>
-        </div>
-    </div>
-    
-    <script src="scripts.js"></script>
+      <label for="budget">How big is your budget right now?</label>
+      <input type="number" id="budget" name="budget" placeholder="Enter your current budget" required>
+
+      <label for="price">Price of the Equipment ($):</label>
+      <input type="number" id="price" name="price" placeholder="Enter the price" required>
+
+      <label for="usage">Estimated usage per month (number of times):</label>
+      <input type="number" id="usage" name="usage" placeholder="How often you'll use it" required>
+
+      <label for="satisfaction">How satisfied are you with your current gear? (1-10)</label>
+      <input type="number" id="satisfaction" name="satisfaction" min="1" max="10" required>
+
+      <button type="button" onclick="assessPurchase()">Evaluate Purchase</button>
+    </form>
+    <div id="result" class="result"></div>
+  </div>
+
+  <script>
+    function assessPurchase() {
+      // Retrieve form values
+      var equipment = document.getElementById("equipment").value;
+      var need = document.getElementById("need").value;
+      var budget = parseFloat(document.getElementById("budget").value);
+      var price = parseFloat(document.getElementById("price").value);
+      var usage = parseFloat(document.getElementById("usage").value);
+      var satisfaction = parseFloat(document.getElementById("satisfaction").value);
+
+      var score = 0;
+      var resultText = "";
+
+      // Increase score if the upgrade isn't really needed
+      if (need === "no") {
+        score += 2;
+      }
+      // If the price is high relative to your current budget, add to score
+      if (price > budget / 2) {
+        score += 2;
+      }
+      // Low usage (e.g., less than 2 times a month) adds to potential impulse buy
+      if (usage < 2) {
+        score += 2;
+      }
+      // High satisfaction with current gear (8-10) suggests you might not need an upgrade
+      if (satisfaction >= 8) {
+        score += 2;
+      }
+
+      // Decision logic: Higher score suggests a risk of Gear Acquisition Syndrome
+      if (score >= 5) {
+        resultText = "<strong>Hold on!</strong> It seems like you might be falling into Gear Acquisition Syndrome. Consider whether this new purchase is truly necessary or if you're driven by impulse.";
+      } else {
+        resultText = "Based on your responses, the purchase might be justified. Still, ensure it fits your actual needs and budget before making a decision.";
+      }
+
+      // Display the result
+      document.getElementById("result").innerHTML = "<h3>Result:</h3><p>" + resultText + "</p>";
+    }
+  </script>
 </body>
 </html>
